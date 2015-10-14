@@ -36,7 +36,7 @@ public class LoginActivity extends DefaultActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        //Comentario de prueba :: Chache
         /*Alex - Le agrega al FrameLayout de activity_login.xml el fragment declarado en esta clase*/
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -48,7 +48,7 @@ public class LoginActivity extends DefaultActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.login, menu);
         return true;
