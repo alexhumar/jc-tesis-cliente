@@ -118,7 +118,7 @@ public class LoginActivity extends DefaultActivity {
 
             this.hideProgressDialog();
 
-            this.showProgressDialog("Obteniendo el punto de encuentro inicial");
+            this.showProgressDialog("Obteniendo el punto a visitar");
 
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
@@ -133,20 +133,10 @@ public class LoginActivity extends DefaultActivity {
     }
 
     public void completePuntoInicial(SoapObject result) {
-        for (int i = 0; i < result.getPropertyCount(); i++) {
-            double latitud = Double.parseDouble(((SoapObject) result.getProperty(i)).getProperty("latitud").toString());
-            double longitud = Double.parseDouble(((SoapObject) result.getProperty(i)).getProperty("longitud").toString());
-            int poiInicial = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("inicial").toString());
-            int poiFinal = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("final").toString());
 
-            if(poiInicial == 1){
-                ((JuegoColaborativo) getApplication()).getSubgrupo().setPoiInicial(new Poi((new Coordenada(latitud, longitud))));
-            } else {
-                if(poiFinal == 1){
-                    ((JuegoColaborativo) getApplication()).getSubgrupo().setPoiFinal(new Poi((new Coordenada(latitud, longitud))));
-                }
-            }
-        }
+        double latitud = Double.parseDouble(result.getProperty("latitud").toString());
+        double longitud = Double.parseDouble(result.getProperty("longitud").toString());
+        ((JuegoColaborativo) getApplication()).getSubgrupo().setPoiInicial(new Poi((new Coordenada(latitud, longitud))));
 
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
         nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(((JuegoColaborativo) getApplication()).getSubgrupo().getId())));
