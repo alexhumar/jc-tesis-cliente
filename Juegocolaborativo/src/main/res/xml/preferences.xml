@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_ip_title"
+        android:key="server_settings">
+        <EditTextPreference
+            android:defaultValue="http://192.168.0.10"
+            android:key="serverURL"
+            android:title="@string/serverurl" />
+        <EditTextPreference
+            android:defaultValue="8080"
+            android:key="serverPort"
+            android:title="@string/serverport" />
+    </PreferenceCategory>
+</PreferenceScreen>

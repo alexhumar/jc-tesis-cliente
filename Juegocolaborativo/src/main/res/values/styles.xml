@@ -1,0 +1,144 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo">
+    </style>
+
+    <style name="button" >
+        <item name="android:textColor" >#ffffff</item>
+        <item name="android:gravity" >center</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:shadowColor" >#000000</item>
+    </style>
+
+    <style name="tituloActivity" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:gravity" >center</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="tituloConsigna" >
+        <item name="android:layout_width" >wrap_content</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#CB345A</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="nombreTituloConsigna" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#CB345A</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="tituloPieza" >
+        <item name="android:layout_width" >wrap_content</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#345ACB</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="nombreTituloPieza" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#345ACB</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="descripcion" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#000000</item>
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:padding" > 10dp</item>
+    </style>
+
+    <style name="tituloConsulta" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#34A3C9</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="descripcionConsulta" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#000000</item>
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:padding" > 3dp</item>
+    </style>
+
+    <style name="tituloRespuesta" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >60dp</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#A534CB</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:padding" > 5dp</item>
+    </style>
+
+    <style name="buttonDecision" >
+        <item name="android:layout_width" >60dp</item>
+        <item name="android:layout_height" >60dp</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:background">#7F7575</item>
+        <item name="android:textSize" >40dp</item>
+    </style>
+
+    <style name="editText" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:inputType" >textMultiLine</item>
+    </style>
+
+    <style name="rowGrupos" >
+        <item name="android:layout_width" >120dp</item>
+        <item name="android:layout_height" >80dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textColor" >#000000</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:padding" > 5dp</item>
+        <item name="android:background">@drawable/rtas_back</item>
+        <item name="android:gravity" >center</item>
+        <item name="android:textStyle" >bold</item>
+    </style>
+
+    <style name="rowImagen" >
+        <item name="android:layout_width" >60dp</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:gravity" >center</item>
+    </style>
+
+    <style name="rowRespuestas" >
+        <item name="android:layout_width" >fill_parent</item>
+        <item name="android:layout_height" >wrap_content</item>
+        <item name="android:textColor" >#FFFFFF</item>
+        <item name="android:textSize" >20dp</item>
+        <item name="android:padding" > 10dp</item>
+    </style>
+
+</resources>

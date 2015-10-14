@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Juego colaborativo</string>
+    <string name="welcome">Bienvenidos!</string>
+    <string name="label_subgrupo">Subgrupo :</string>
+    <string name="label_password">Clave</string>
+    <string name="action_settings">Settings</string>
+    <string name="descripcion">Descripción:</string>
+    <string name="consigna">Consigna:</string>
+    <string name="pieza">Pieza a recolectar: </string>
+    <string name="respuesta_decision">¿Crees que la pieza cumple con la consigna?\n(justificar)</string>
+    <string name="justificacion">Justificación: </string>
+    <string name="justificar">Justificar: </string>
+    <string name="enviar">Enviar</string>
+    <string name="consultar">Consultar</string>
+    <string name="respuestas">Respuestas</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_pieza">PiezaActivity</string>
+    <string name="title_activity_respuestas">RespuestaActivity</string>
+    <string name="tomarDecision">Tomar Decision</string>
+    <string name="respuesta_consulta">¿Es correcta la respuesta?\n(justificar)</string>
+    <string name="responder">Responder</string>
+    <string name="respuesta_parcial">Consulta generada: </string>
+    <string name="titulo_activity_responder">ATENCIÓN!! TUS COMPAÑEROS NECESITAN DE TU AYUDA!</string>
+    <string name="titulo_activity_pieza">HAS LLEGADO A LA PIEZA A RECOLECTAR!\nResponde si la pieza cumple con la consigna!</string>
+    <string name="titulo_activity_pieza_land">HAS LLEGADO A LA PIEZA A RECOLECTAR! Responde si la pieza cumple con la consigna!</string>
+    <string name="titulo_activity_resultados">HA TERMINADO EL JUEGO! Estos son los resultados</string>
+    <string name="titulo_resultados_subgrupo">Los resultados del subgrupo son los siguientes</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="pref_ip_title">Configurar URL y puerto</string>
+    <string name="pref_title">Settings</string>
+    <string name="serverurl">URL del servidor</string>
+    <string name="serverport">Puerto del servidor</string>
+    <string name="menu_settings">Settings</string>
+
+</resources>

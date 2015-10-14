@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="150dip" >
+
+    <TextView
+        android:id="@+id/label"
+        android:text="@+id/label"
+        style="@style/rowGrupos"  >
+    </TextView>
+
+    <ImageView
+        android:id="@+id/icon"
+        style="@style/rowImagen">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/content"
+        style="@style/rowRespuestas">
+    </TextView>
+</LinearLayout> 

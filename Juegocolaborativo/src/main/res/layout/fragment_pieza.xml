@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.juegocolaborativo.activity.PiezaActivity$PlaceholderFragment">
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/titulo_activity_pieza"
+        android:id="@+id/titulo"
+        android:layout_marginTop="10dp"
+        style="@style/tituloActivity"/>
+    <!-- Alex - android:layout_below="@+id/linearLayout" ese atributo estaba mal. No existe tal ID. Lo saqué. -->
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/consigna"
+        android:id="@+id/consigna"
+        android:layout_below="@+id/titulo"
+        android:layout_marginTop="20dp"
+        style="@style/tituloConsigna"/>
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/tituloConsigna"
+        android:layout_alignTop="@+id/consigna"
+        android:layout_toRightOf="@+id/consigna"
+        style="@style/nombreTituloConsigna"/>
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/descripcionConsigna"
+        android:layout_below="@+id/consigna"
+        style="@style/descripcion"/>
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/pieza"
+        android:id="@+id/pieza"
+        android:layout_below="@+id/descripcionConsigna"
+        android:layout_marginTop="20dp"
+        style="@style/tituloPieza"/>
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tituloPieza"
+        android:layout_alignTop="@+id/pieza"
+        android:layout_toRightOf="@+id/pieza"
+        android:layout_centerHorizontal="true"
+        style="@style/nombreTituloPieza"/>
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/descripcionPieza"
+        android:layout_below="@+id/pieza"
+        style="@style/descripcion"/>
+
+    <ToggleButton
+        android:id="@+id/respuestaDecision"
+        android:textOn="SI"
+        android:textOff="NO"
+        android:checked="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        style="@style/buttonDecision"
+        android:layout_below="@+id/descripcionPieza"
+        android:layout_toRightOf="@+id/button_responder" />
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/respuesta_decision"
+        android:id="@+id/tituloRespuesta"
+        android:layout_alignTop="@+id/respuestaDecision"
+        android:layout_toLeftOf="@+id/respuestaDecision"
+        style="@style/tituloRespuesta"
+        android:layout_above="@id/tituloRespuesta" />
+
+    <EditText
+        android:id="@+id/justificacion"
+        android:layout_below="@id/tituloRespuesta"
+        style="@style/editText"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="@string/enviar"
+        android:id="@+id/button_enviar"
+        android:background="@drawable/rustic_button"
+        style="@style/button"
+        android:layout_marginRight="40dp"
+        android:layout_alignTop="@+id/button_consultar"
+        android:layout_toLeftOf="@+id/button_consultar" />
+
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:text="@string/consultar"
+        android:id="@+id/button_consultar"
+        android:background="@drawable/rustic_button"
+        style="@style/button"
+        android:layout_below="@+id/justificacion"
+        android:layout_toLeftOf="@+id/respuestaDecision" />
+
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:text="@string/respuestas"
+        android:id="@+id/button_respuestas"
+        android:background="@drawable/rustic_button"
+        style="@style/button"
+        android:layout_below="@+id/justificacion"
+        android:layout_toLeftOf="@+id/respuestaDecision" />
+
+
+</RelativeLayout>
