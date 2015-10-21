@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.juegocolaborativo.JuegoColaborativo;
@@ -23,11 +22,11 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         int id = intent.getIntExtra("id",-1);
         Boolean entering = intent.getBooleanExtra(key, false);
         if (entering) {
-            if(intent.getAction() == MapActivity.PROX_ALERT_PUNTO_INICIAL){
-                //avisa que ya llego al poi incial y está en condiciones de comenzar el juego
+            if(intent.getAction() == MapActivity.PROX_ALERT_POI_SUBGRUPO){
+                //el subgrupo avisa que ya llego a su poi y está en condiciones de comenzar el juego
                 this.getApplication().enviarJugando();
-            } else if(intent.getAction() == MapActivity.PROX_ALERT_PUNTO_FINAL){
-                //avisa que ya termino de recorrer todos los pois
+            } else if(intent.getAction() == MapActivity.PROX_ALERT_POI_SIGUIENTE){
+                //avisa que ya llego al poi siguiente
                 this.getApplication().enviarFinJuego();
             } else {
                 this.getApplication().mostrarInfoPieza(id);

@@ -28,6 +28,7 @@ import org.ksoap2.serialization.SoapPrimitive;
 import model.Coordenada;
 import model.Grupo;
 import model.Poi;
+import model.Posta;
 import model.Subgrupo;
 
 public class LoginActivity extends DefaultActivity {
@@ -134,13 +135,20 @@ public class LoginActivity extends DefaultActivity {
 
     public void completePuntoInicial(SoapObject result) {
 
-        double latitud = Double.parseDouble(result.getProperty("latitud").toString());
-        double longitud = Double.parseDouble(result.getProperty("longitud").toString());
-        ((JuegoColaborativo) getApplication()).getSubgrupo().setPoiInicial(new Poi((new Coordenada(latitud, longitud))));
+        int idxPoiSubgrupo = 0;
+        int idxPoiSiguiente = 1;
+        double latitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSubgrupo)).getProperty("latitud").toString());
+        double longitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSubgrupo)).getProperty("longitud").toString());
+        Poi poiSubgrupo = new Poi(new Coordenada(latitud, longitud));
+        latitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSiguiente)).getProperty("latitud").toString());
+        longitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSiguiente)).getProperty("longitud").toString());
+        Poi poiSiguiente = new Poi(new Coordenada(latitud, longitud));
+        Posta postaSiguiente = new Posta(null, poiSiguiente);
+        Posta postaSubgrupo = new Posta(postaSiguiente,poiSubgrupo);
+        ((JuegoColaborativo) getApplication()).getSubgrupo().setPosta(postaSubgrupo);
 
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
         nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(((JuegoColaborativo) getApplication()).getSubgrupo().getId())));
-
         WSTask subgruposTask = new WSTask();
         subgruposTask.setReferer(this);
         subgruposTask.setMethodName(SoapManager.METHOD_GET_SUBGRUPOS);

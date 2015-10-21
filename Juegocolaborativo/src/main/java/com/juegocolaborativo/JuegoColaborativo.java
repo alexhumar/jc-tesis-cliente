@@ -82,9 +82,9 @@ public class JuegoColaborativo extends Application {
     }
 
     public void enviarJugando(){
-        //detengo el proximity alert del poi inicial y limpio el mapa (borro marker poi inicial)
+        //detengo el proximity alert del poi subgrupo y limpio el mapa (borro marker poi inicial)
         this.getCurrentActivity().removerPuntoInicial();
-        this.getCurrentActivity().showDialogError("Felicitaciones, has llegado al punto de encuentro inicial! Ahora espera la llegada de todos los subgrupos", "JuegoColaborativo");
+        this.getCurrentActivity().showDialogError("Felicitaciones, has llegado al poi asignado! Hora de jugar!", "JuegoColaborativo");
 
         //creo la lista de consultas vacias del subgrupo
         this.getSubgrupo().setIdsConsultasQueMeHicieron(new ArrayList<Integer>());
@@ -121,6 +121,7 @@ public class JuegoColaborativo extends Application {
         esperarEstadoTask.executeTask("completeEsperarEstadoSubgrupos", "errorEsperarEstadoSubgrupos");
     }
 
+/*Se invoca desde PoolServiceEstados, que se ejecuta cada 5 segundos creo.*/
 public void completeEsperarEstadoSubgrupos(SoapObject result) {
     //chequeo si el valor del resultado es positivo para levantar la barrera
     SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");

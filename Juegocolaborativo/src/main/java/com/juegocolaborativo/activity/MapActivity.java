@@ -1,6 +1,5 @@
 package com.juegocolaborativo.activity;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -37,7 +35,6 @@ import org.ksoap2.serialization.SoapPrimitive;
 
 import java.util.HashMap;
 
-import model.Coordenada;
 import model.PiezaARecolectar;
 import model.Poi;
 import model.Subgrupo;
@@ -75,8 +72,8 @@ public class MapActivity extends DefaultActivity implements
     private static final String POINT_LATITUDE_KEY = "POINT_LATITUDE_KEY";
     private static final String POINT_LONGITUDE_KEY = "POINT_LONGITUDE_KEY";
 
-    public static final String PROX_ALERT_PUNTO_INICIAL = "com.juegocolaborativo.ProximityAlertPuntoInicial";
-    public static final String PROX_ALERT_PUNTO_FINAL = "com.juegocolaborativo.ProximityAlertPuntoFinal";
+    public static final String PROX_ALERT_POI_SUBGRUPO = "com.juegocolaborativo.ProximityAlertPoiSubgrupo";
+    public static final String PROX_ALERT_POI_SIGUIENTE = "com.juegocolaborativo.ProximityAlertPoiSiguiente";
     public static final String PROX_ALERT_PIEZA_A_RECOLECTAR = "com.juegocolaborativo.ProximityAlert";
 
     private LocationManager locationManager;
@@ -92,8 +89,8 @@ public class MapActivity extends DefaultActivity implements
         this.activeMarkers = activeMarkers;
     }
 
-    public static String getProxAlertPuntoInicial() {
-        return PROX_ALERT_PUNTO_INICIAL;
+    public static String getProxAlertPoiSubgrupo() {
+        return PROX_ALERT_POI_SUBGRUPO;
     }
 
     @Override
@@ -240,30 +237,23 @@ public class MapActivity extends DefaultActivity implements
 
             Subgrupo subgrupo = ((JuegoColaborativo) getApplication()).getSubgrupo();
 
-            if(subgrupo.getPiezasARecolectar().isEmpty()){
-                // El subgrupo todavía no tiene el listado de piezas, mostramos el punto inicial
-                Poi puntoInicial = subgrupo.getPoiInicial();
-                addProximityAlert(puntoInicial, PROX_ALERT_PUNTO_INICIAL, 0);
+            if(!subgrupo.getPosta().getPiezaARecolectar().isVisitada()){
+                // Mostramos el punto correspondiente a la posta del subgrupo
+                Poi poiSubgrupo = subgrupo.getPosta().getPoi();
+                addProximityAlert(poiSubgrupo, PROX_ALERT_POI_SUBGRUPO, 0);
                 this.getGoogleMap().addMarker(new MarkerOptions()
-                            .position(new LatLng(puntoInicial.getCoordenadas().getLatitud(), puntoInicial.getCoordenadas().getLongitud()))
-                            .title("Punto inicial")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_flag)));
+                        .position(new LatLng(poiSubgrupo.getCoordenadas().getLatitud(), poiSubgrupo.getCoordenadas().getLongitud()))
+                        .title("Poi Subgrupo")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_flag)));
             } else {
-                if(subgrupo.piezasVisitadas()){
-                    this.showDialogError("Has finalizado de recorrer las piezas, ahora ve al punto final!", "JuegoColaborativo");
-                    // Ya están todas las piezas visitadas, mostramos el punto final
-                    Poi puntoFinal = subgrupo.getPoiFinal();
-                    addProximityAlert(puntoFinal, PROX_ALERT_PUNTO_FINAL, 0);
-                    this.getGoogleMap().addMarker(new MarkerOptions()
-                            .position(new LatLng(puntoFinal.getCoordenadas().getLatitud(), puntoFinal.getCoordenadas().getLongitud()))
-                            .title("Punto final")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_flag)));
-                } else {
-                    // Se muestran todas las piezas del subgrupo
-                    for (Integer key : subgrupo.getPiezasARecolectar().keySet()) {
-                        this.addPiezasARecolectarToMap(subgrupo.getPiezasARecolectar().get(key));
-                    }
-                }
+                // Mostramos el punto al que debe dirigirse luego de reponder su Pieza
+                this.showDialogError("Has respondido la consigna! Ahora ve al punto siguiente!", "JuegoColaborativo");
+                Poi poiSiguiente = subgrupo.getPosta().getSiguientePosta().getPoi();
+                addProximityAlert(poiSiguiente, PROX_ALERT_POI_SIGUIENTE, 0);
+                this.getGoogleMap().addMarker(new MarkerOptions()
+                        .position(new LatLng(poiSiguiente.getCoordenadas().getLatitud(), poiSiguiente.getCoordenadas().getLongitud()))
+                        .title("Poi Siguiente")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_flag)));
             }
         }
     }
@@ -337,7 +327,7 @@ public class MapActivity extends DefaultActivity implements
     }
 
     public void removerPuntoInicial(){
-        this.removeProximityAlert(PROX_ALERT_PUNTO_INICIAL);
+        this.removeProximityAlert(PROX_ALERT_POI_SUBGRUPO);
         //limpio el mapa de markers
         this.googleMap.clear();
     }
@@ -355,7 +345,7 @@ public class MapActivity extends DefaultActivity implements
         if(termino){
             this.googleMap.clear();
             Poi puntoFinal = ((JuegoColaborativo) getApplication()).getSubgrupo().getPoiFinal();
-            addProximityAlert(puntoFinal, PROX_ALERT_PUNTO_FINAL, 0);
+            addProximityAlert(puntoFinal, PROX_ALERT_POI_SIGUIENTE, 0);
             this.getGoogleMap().addMarker(new MarkerOptions()
                     .position(new LatLng(puntoFinal.getCoordenadas().getLatitud(), puntoFinal.getCoordenadas().getLongitud()))
                     .title("Punto final"));
@@ -367,7 +357,7 @@ public class MapActivity extends DefaultActivity implements
     }
 
     public void removerPuntoFinal(){
-        this.removeProximityAlert(PROX_ALERT_PUNTO_FINAL);
+        this.removeProximityAlert(PROX_ALERT_POI_SIGUIENTE);
         //limpio el mapa de markers
         this.googleMap.clear();
     }
