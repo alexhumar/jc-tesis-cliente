@@ -285,7 +285,7 @@ public class MapActivity extends DefaultActivity implements
     protected void onResume() {
         enviarMsjConsultaRespondida();
         super.onResume();
-        this.initializeMap();
+        this.initializeMap();//Cuando estas jugando y tenes que responder una pregunta, la activity se detiene. Luego de responder, reanuda.
     }
 
     public void onLocationChanged(Location location) {
@@ -303,7 +303,7 @@ public class MapActivity extends DefaultActivity implements
         locationManager.removeProximityAlert(operation);
     }
 
-    public void addPiezasARecolectarToMap(PiezaARecolectar piezaARecolectar){
+    /*   public void addPiezasARecolectarToMap(PiezaARecolectar piezaARecolectar){
         //creo el marker
         float color = BitmapDescriptorFactory.HUE_ORANGE;
         if(piezaARecolectar.isVisitada()){
@@ -320,11 +320,11 @@ public class MapActivity extends DefaultActivity implements
             /* Alex - cuando se este llegando a la pieza a recolectar, se disparará el proximityIntent correspondiente, que causará la ejecución del
              * método onReceive del BroadcastReceiver asociado a la action del proximityIntent, el cual recibe el id de la pieza, enviándole el mensaje
              * mostrarInfoPieza(id_pieza) al juego, que a su vez produce que se despliegue la info de la pieza lanzando PiezaActivity. */
-        }
+        /*}*/
         //agrego el marker a la lista de markers activos
-        this.getActiveMarkers().put(piezaARecolectar.getId(),marker);
+       /* this.getActiveMarkers().put(piezaARecolectar.getId(),marker);
 
-    }
+    }*/
 
     public void removerPuntoInicial(){
         this.removeProximityAlert(PROX_ALERT_POI_SUBGRUPO);

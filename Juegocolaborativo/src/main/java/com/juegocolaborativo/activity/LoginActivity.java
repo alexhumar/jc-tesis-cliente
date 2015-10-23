@@ -137,11 +137,11 @@ public class LoginActivity extends DefaultActivity {
 
         int idxPoiSubgrupo = 0;
         int idxPoiSiguiente = 1;
-        double latitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSubgrupo)).getProperty("latitud").toString());
-        double longitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSubgrupo)).getProperty("longitud").toString());
+        double latitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSubgrupo)).getProperty("coordenadaY").toString());
+        double longitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSubgrupo)).getProperty("coordenadaX").toString());
         Poi poiSubgrupo = new Poi(new Coordenada(latitud, longitud));
-        latitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSiguiente)).getProperty("latitud").toString());
-        longitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSiguiente)).getProperty("longitud").toString());
+        latitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSiguiente)).getProperty("coordenadaY").toString());
+        longitud = Double.parseDouble(((SoapObject) result.getProperty(idxPoiSiguiente)).getProperty("coordenadaX").toString());
         Poi poiSiguiente = new Poi(new Coordenada(latitud, longitud));
         Posta postaSiguiente = new Posta(null, poiSiguiente);
         Posta postaSubgrupo = new Posta(postaSiguiente,poiSubgrupo);

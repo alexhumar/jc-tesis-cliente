@@ -8,7 +8,6 @@ import com.juegocolaborativo.activity.DefaultActivity;
 import com.juegocolaborativo.activity.MapActivity;
 import com.juegocolaborativo.activity.PiezaActivity;
 import com.juegocolaborativo.activity.ResponderActivity;
-import com.juegocolaborativo.activity.RespuestasActivity;
 import com.juegocolaborativo.activity.ResultadosActivity;
 import com.juegocolaborativo.service.PoolServiceEstados;
 import com.juegocolaborativo.service.PoolServiceColaborativo;
@@ -21,14 +20,11 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import model.Consigna;
 import model.Coordenada;
-import model.Grupo;
 import model.PiezaARecolectar;
 import model.Poi;
 import model.Respuesta;
@@ -81,30 +77,77 @@ public class JuegoColaborativo extends Application {
         this.subgrupo = subgrupo;
     }
 
+    public void jugarSiEsPrimerSubgrupo(int idSubgrupo) {
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
+
+        //Ejecuto la tarea que cambia de estado al subgrupo
+        WSTask setJugandoTask = new WSTask();
+        setJugandoTask.setReferer(this);
+        setJugandoTask.setMethodName(SoapManager.METHOD_ES_PRIMER_SUBGRUPO);
+        setJugandoTask.setParameters(nameValuePairs);
+        setJugandoTask.executeTask("completeEsPrimerSubgrupo", "errorEsPrimerSubgrupo");
+    }
+
+    public void completeEsPrimerSubgrupo(SoapObject result) {
+        try{
+            SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");
+            int esPrimerSubgrupo = Integer.parseInt(res.toString());
+            if (esPrimerSubgrupo == 1) {
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
+                getSubgrupo().setEstado(getSubgrupo().ESTADO_JUGANDO);
+                nameValuePairs.add(new BasicNameValuePair("idEstado", Integer.toString(getSubgrupo().getEstado())));
+
+                //Ejecuto la tarea que cambia de estado al subgrupo
+                WSTask setJugandoTask = new WSTask();
+                setJugandoTask.setReferer(this);
+                setJugandoTask.setMethodName(SoapManager.METHOD_CAMBIAR_ESTADO_SUBGRUPO);
+                setJugandoTask.setParameters(nameValuePairs);
+                setJugandoTask.executeTask("completeEnviarJugando", "errorEnviarJugando");
+            }
+        }catch (Exception e){
+            Log.e("ERROR", e.getMessage());
+        }
+    }
+
+    public void completeEnviarJugando(SoapObject result) {
+        try{
+            //el resultado trae el nombre y la consigna del grupo al cual pertenece el subgrupo
+            Consigna consigna = new Consigna(((SoapPrimitive) result.getProperty("nombre")).toString(),((SoapPrimitive) result.getProperty("descripcion")).toString());
+            this.getSubgrupo().getGrupo().setNombre(((SoapPrimitive) result.getProperty("nombreGrupo")).toString());
+            this.getSubgrupo().getGrupo().setConsigna(consigna);
+
+            this.comienzoJuego();
+        }catch (Exception e){
+            Log.e("ERROR", e.getMessage());
+        }
+    }
+
+    public void errorEnviarJugando(String failedMethod){
+        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
+    }
+
+    public void errorEsPrimerSubgrupo(String failedMethod){
+        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
+    }
+
     public void enviarJugando(){
         //detengo el proximity alert del poi subgrupo y limpio el mapa (borro marker poi inicial)
+        //Quizas convendria chequear si ya esta jugando (por si le llega una consulta mientras esta en su poi. Ver OnResume de MapActivity)
         this.getCurrentActivity().removerPuntoInicial();
         this.getCurrentActivity().showDialogError("Felicitaciones, has llegado al poi asignado! Hora de jugar!", "JuegoColaborativo");
 
         //creo la lista de consultas vacias del subgrupo
         this.getSubgrupo().setIdsConsultasQueMeHicieron(new ArrayList<Integer>());
-
-        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
-        getSubgrupo().setEstado(getSubgrupo().ESTADO_JUGANDO);
-        nameValuePairs.add(new BasicNameValuePair("idEstado", Integer.toString(getSubgrupo().getEstado())));
-
         //llamo al PoolServiceEstados para chequear si un subgrupo realizó una pregunta que debo responder
         /* Alex - desde que arranca el juego, se inicia este servicio, que lo que hace es, cada 5 segundos, chequear si existen preguntas hechas por otro
         * subgrupo mediante la invocacion al webservice "existenPreguntasSinResponder" */
         this.getCurrentActivity().startService(new Intent(getCurrentActivity(), PoolServiceColaborativo.class));
 
-        //Ejecuto la tarea que cambia de estado al subgrupo
-        WSTask setJugandoTask = new WSTask();
-        setJugandoTask.setReferer(this);
-        setJugandoTask.setMethodName(SoapManager.METHOD_CAMBIAR_ESTADO_SUBGRUPO);
-        setJugandoTask.setParameters(nameValuePairs);
-        setJugandoTask.executeTask("completeEnviarJugando", "errorEnviarJugando");
+        this.getCurrentActivity().stopService(new Intent(new Intent(getCurrentActivity(), PoolServiceEstados.class)));
+
+        this.jugarSiEsPrimerSubgrupo(this.getSubgrupo().getId());
     }
 
     /*
@@ -121,82 +164,68 @@ public class JuegoColaborativo extends Application {
         esperarEstadoTask.executeTask("completeEsperarEstadoSubgrupos", "errorEsperarEstadoSubgrupos");
     }
 
-/*Se invoca desde PoolServiceEstados, que se ejecuta cada 5 segundos creo.*/
-public void completeEsperarEstadoSubgrupos(SoapObject result) {
-    //chequeo si el valor del resultado es positivo para levantar la barrera
-    SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");
-    int llegaronSubgrupos = Integer.parseInt(res.toString());
+    /*Se invoca desde PoolServiceEstados, que se ejecuta cada 5 segundos creo.*/
+    public void completeEsperarEstadoSubgrupos(SoapObject result) {
+        //chequeo si el valor del resultado es positivo para levantar la barrera
+        SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");
+        int llegaronSubgrupos = Integer.parseInt(res.toString());
 
-    if (llegaronSubgrupos == 1){
-        //ahora dependendiendo del estado esperado, es el metodo que debo llamar despues de ejecutar la tarea
-        if (getSubgrupo().getEstado() == getSubgrupo().ESTADO_JUGANDO){
-            this.comienzoJuego();
-        }else{
-            this.finJuego();
+        if (llegaronSubgrupos == 1){
+            //ahora dependendiendo del estado esperado, es el metodo que debo llamar despues de ejecutar la tarea
+            if (getSubgrupo().getEstado() == getSubgrupo().ESTADO_INICIAL){
+                this.enviarJugando();
+            }/*else if (getSubgrupo().getEstado() == getSubgrupo().ESTADO_JUGANDO){
+            }*/
+            else {
+                this.finJuego();
+            }
         }
     }
-}
 
     public void errorEsperarEstadoSubgrupos(String failedMethod){
-        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
-    }
-
-    public void completeEnviarJugando(SoapObject result) {
-        try{
-            //el resultado trae el nombre y la consigna del grupo al cual pertenece el subgrupo
-            Consigna consigna = new Consigna(((SoapPrimitive) result.getProperty("nombre")).toString(),((SoapPrimitive) result.getProperty("descripcion")).toString());
-            this.getSubgrupo().getGrupo().setNombre(((SoapPrimitive) result.getProperty("nombreGrupo")).toString());
-            this.getSubgrupo().getGrupo().setConsigna(consigna);
-
-            this.getCurrentActivity().startService(new Intent(getCurrentActivity(), PoolServiceEstados.class));
-        }catch (Exception e){
-            Log.e("ERROR", e.getMessage());
-        }
-    }
-
-    public void errorEnviarJugando(String failedMethod){
         this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
     }
 
     public void comienzoJuego() {
         try{
             this.getCurrentActivity().showDialogError("Llegaron todos! Comienza el juego!", "JuegoColaborativo");
-            this.getCurrentActivity().stopService(new Intent(new Intent(getCurrentActivity(), PoolServiceEstados.class)));
+
             //traigo todos los pois con sus piezas
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
 
             WSTask comienzoJuegoTask = new WSTask();
             comienzoJuegoTask.setReferer(this);
-            comienzoJuegoTask.setMethodName(SoapManager.METHOD_GET_PIEZAS_A_RECOLECTAR);
+            comienzoJuegoTask.setMethodName(SoapManager.METHOD_GET_PIEZA_A_RECOLECTAR);
             comienzoJuegoTask.setParameters(nameValuePairs);
-            comienzoJuegoTask.executeTask("getPiezasARecolectar", "errorGetPiezasARecolectar");
+            comienzoJuegoTask.executeTask("getPiezaARecolectar", "errorGetPiezaARecolectar");
         }catch (Exception e){
             Log.e("ERROR", e.getMessage());
         }
     }
 
-    public void errorComienzoJuego(String failedMethod){
+    //ALEX - Si no rompe, borrar
+    /*public void errorComienzoJuego(String failedMethod){
         this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
-    }
+    }*/
 
-    public void getPiezasARecolectar(SoapObject result) {
+    public void getPiezaARecolectar(SoapObject result) {
         try{
-            for (int i = 0; i < result.getPropertyCount(); i++) {
-                SoapObject poi = (SoapObject)((SoapObject) result.getProperty(i)).getProperty("poi");
-                int idPieza = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("id").toString());
-                double latitud = Double.parseDouble(poi.getProperty("latitud").toString());
-                double longitud = Double.parseDouble(poi.getProperty("longitud").toString());
-                String nombre = ((SoapObject) result.getProperty(i)).getProperty("nombre").toString();
-                String descripcion = ((SoapObject) result.getProperty(i)).getProperty("descripcion").toString();
+            //SoapObject poi = (SoapObject) result.getProperty("poi");
+            SoapObject poi = (SoapObject)result.getProperty("poi");
+            int idPieza = Integer.parseInt(result.getProperty("id").toString());
+            String nombre = result.getProperty("nombre").toString();
+            String descripcion = result.getProperty("descripcion").toString();
+            double latitud = Double.parseDouble(poi.getProperty("coordenadaY").toString());
+            double longitud = Double.parseDouble(poi.getProperty("coordenadaX").toString());
 
-                //creo la pieza a recolectar, la guardo en la lista de piezas del subgrupo
-                PiezaARecolectar pieza = new PiezaARecolectar(idPieza,nombre,descripcion,new Poi(new Coordenada(latitud,longitud)),new ArrayList<Consigna>());
-                this.getSubgrupo().getPiezasARecolectar().put(idPieza, pieza);
+            //creo la pieza a recolectar, la guardo en la lista de piezas del subgrupo
+            PiezaARecolectar pieza = new PiezaARecolectar(idPieza,nombre,descripcion,new Poi(new Coordenada(latitud,longitud)),new ArrayList<Consigna>());
+            this.getSubgrupo().getPosta().getPoi().setPieza(pieza);
 
-                //creo el marker con su proximity
-                this.getCurrentActivity().addPiezasARecolectarToMap(pieza);
-            }
+            //creo el marker con su proximity
+            //this.getCurrentActivity().addPiezasARecolectarToMap(pieza);
+            this.mostrarInfoPieza(idPieza);
 
         }catch (Exception e){
             Log.e("ERROR", e.getMessage());
@@ -204,14 +233,14 @@ public void completeEsperarEstadoSubgrupos(SoapObject result) {
 
     }
 
-    public void errorGetPiezasARecolectar(String failedMethod){
+    public void errorGetPiezaARecolectar(String failedMethod){
         this.getCurrentActivity().showDialogError("Error en la tarea :" + failedMethod, "Error");
     }
 
     public void mostrarInfoPieza(int id_pieza){
-        this.setPiezaActual(this.getSubgrupo().getPiezaWithId(id_pieza));
+        this.setPiezaActual(this.getSubgrupo().getPosta().getPoi().getPieza());
         //remuevo el proximity alert y cambio el color del marker
-        this.getCurrentActivity().removeProximityAlert(MapActivity.PROX_ALERT_PIEZA_A_RECOLECTAR+this.getPiezaActual().getNombre());
+        //this.getCurrentActivity().removeProximityAlert(MapActivity.PROX_ALERT_PIEZA_A_RECOLECTAR + this.getPiezaActual().getNombre());
 
         // Inicio la activity que muestra la información de la pieza
         this.getCurrentActivity().startActivity(new Intent(this, PiezaActivity.class));
