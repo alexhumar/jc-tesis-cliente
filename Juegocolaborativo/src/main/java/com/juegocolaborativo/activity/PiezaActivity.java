@@ -82,10 +82,10 @@ public class PiezaActivity extends DefaultActivity {
             }
 
             /* Alex - para optimizar el consumo de memoria, la estructura de datos deberia ser SparseArray<Integer,SparseArray<Integer,Respuesta>>*/
-            HashMap<Integer,HashMap<Integer, Respuesta>> hashMap = new HashMap<Integer, HashMap<Integer, Respuesta>>();
+            //HashMap<Integer,HashMap<Integer, Respuesta>> hashMap = new HashMap<Integer, HashMap<Integer, Respuesta>>();
             /* Alex - en hashMap se guarda, para la pieza actual, las respuestas de cada subgrupo (en este punto las respuestas estan vacías). */
-            hashMap.put(app.getPiezaActual().getId(),respuestas);
-            app.getSubgrupo().setRespuestas(hashMap);
+            //hashMap.put(app.getPiezaActual().getId(),respuestas);
+            app.getSubgrupo().setRespuestas(respuestas);
             tituloPieza.setText(app.getPiezaActual().getNombre());
             descripcionPieza.setText(app.getPiezaActual().getDescripcion());
 

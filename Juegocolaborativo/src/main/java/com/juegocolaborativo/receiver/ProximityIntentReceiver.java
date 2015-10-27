@@ -50,6 +50,8 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
                 setJugandoTask.setMethodName(SoapManager.METHOD_CAMBIAR_ESTADO_SUBGRUPO);
                 setJugandoTask.setParameters(nameValuePairs);
                 setJugandoTask.executeTask("completeCambiarEstadoSubgrupo", "errorCambiarEstadoSubgrupo");
+
+                //TODO USAR LOS WS setPostaActual y esSubgrupoActual para sincronizar los subgrupos.
             } else if(intent.getAction() == MapActivity.PROX_ALERT_POI_SIGUIENTE){
                 //avisa que ya llego al poi siguiente
                 this.getApplication().enviarFinJuego();
