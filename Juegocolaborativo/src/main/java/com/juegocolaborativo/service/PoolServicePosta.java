@@ -1,6 +1,5 @@
 package com.juegocolaborativo.service;
 
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -11,7 +10,7 @@ import com.juegocolaborativo.JuegoColaborativo;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PoolServiceRespuestas extends Service {
+public class PoolServicePosta extends Service{
 
     public static final long UPDATE_INTERVAL = 5000;
     public static final long DELAY_INTERVAL  = 0;
@@ -38,8 +37,7 @@ public class PoolServiceRespuestas extends Service {
     }
 
     private void _startService() {
-        /* Alex - por lo que entendi, se crea un thread aparte donde se ejecuta la invocacion al metodo esperarRespuestasSubgrupos a intervalos regulares.
-         * Dicho metodo invoca al WebService "existenRespuestas" que retorna las respuestas para el subgrupo que consulta, en caso que existan. */
+
         TimerTask asynchronousTask;
         final Handler handler = new Handler();
         asynchronousTask = new TimerTask() {
@@ -60,14 +58,14 @@ public class PoolServiceRespuestas extends Service {
         timer.scheduleAtFixedRate(asynchronousTask, DELAY_INTERVAL, UPDATE_INTERVAL);
     }
 
-    private void doServiceWork() {
-        // Llamar al WS
-        ((JuegoColaborativo) getApplication()).esperarRespuestasSubgrupos();
-    }
-
     private void _shutdownService() {
         if (timer != null){
             timer.cancel();
         }
     }
+    private void doServiceWork() {
+        // Llamar al WS
+        ((JuegoColaborativo) getApplication()).esperarTurnoJuego();
+    }
+
 }

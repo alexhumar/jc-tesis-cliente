@@ -25,6 +25,7 @@
         <service android:name="com.juegocolaborativo.service.PoolServiceEstados" />
         <service android:name="com.juegocolaborativo.service.PoolServiceColaborativo" />
         <service android:name="com.juegocolaborativo.service.PoolServiceRespuestas" />
+        <service android:name="com.juegocolaborativo.service.PoolServicePosta" />
 
         <activity
             android:name="com.juegocolaborativo.activity.LoginActivity"
