@@ -11,6 +11,7 @@ import com.juegocolaborativo.activity.ResponderActivity;
 import com.juegocolaborativo.activity.ResultadosActivity;
 import com.juegocolaborativo.service.PoolServiceEstados;
 import com.juegocolaborativo.service.PoolServiceColaborativo;
+import com.juegocolaborativo.service.PoolServicePosta;
 import com.juegocolaborativo.soap.SoapManager;
 import com.juegocolaborativo.task.WSTask;
 
@@ -77,16 +78,34 @@ public class JuegoColaborativo extends Application {
         this.subgrupo = subgrupo;
     }
 
-    public void jugarSiEsPrimerSubgrupo(int idSubgrupo) {
+    public void esperarTurnoJuego() {
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
         nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
 
         //Ejecuto la tarea que cambia de estado al subgrupo
         WSTask setJugandoTask = new WSTask();
         setJugandoTask.setReferer(this);
-        setJugandoTask.setMethodName(SoapManager.METHOD_ES_PRIMER_SUBGRUPO);
+        setJugandoTask.setMethodName(SoapManager.METHOD_ES_SUBGRUPO_ACTUAL);
         setJugandoTask.setParameters(nameValuePairs);
-        setJugandoTask.executeTask("completeEsPrimerSubgrupo", "errorEsPrimerSubgrupo");
+        setJugandoTask.executeTask("completeEsSubgrupoActual", "errorEsSubgrupoActual");
+    }
+
+    public void completeEsSubgrupoActual(SoapObject result) {
+        try{
+            SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");
+            int esSubgrupoActual = Integer.parseInt(res.toString());
+            if (esSubgrupoActual == 1) {
+                //Deja de preguntar si es su turno
+                this.getCurrentActivity().stopService(new Intent(getCurrentActivity(), PoolServicePosta.class));
+                this.jugar();
+            }
+        }catch (Exception e){
+            Log.e("ERROR", e.getMessage());
+        }
+    }
+
+    public void errorEsSubgrupoActual(String failedMethod){
+        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
     }
 
     public void jugar() {
@@ -101,18 +120,6 @@ public class JuegoColaborativo extends Application {
         setJugandoTask.setMethodName(SoapManager.METHOD_CAMBIAR_ESTADO_SUBGRUPO);
         setJugandoTask.setParameters(nameValuePairs);
         setJugandoTask.executeTask("completeEnviarJugando", "errorEnviarJugando");
-    }
-
-    public void completeEsPrimerSubgrupo(SoapObject result) {
-        try{
-            SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");
-            int esPrimerSubgrupo = Integer.parseInt(res.toString());
-            if (esPrimerSubgrupo == 1) {
-                this.jugar();
-            }
-        }catch (Exception e){
-            Log.e("ERROR", e.getMessage());
-        }
     }
 
     public void completeEnviarJugando(SoapObject result) {
@@ -132,10 +139,6 @@ public class JuegoColaborativo extends Application {
         this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
     }
 
-    public void errorEsPrimerSubgrupo(String failedMethod){
-        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
-    }
-
     public void enviarJugando(){
         //detengo el proximity alert del poi subgrupo y limpio el mapa (borro marker poi inicial)
         //Quizas convendria chequear si ya esta jugando (por si le llega una consulta mientras esta en su poi. Ver OnResume de MapActivity)
@@ -151,7 +154,7 @@ public class JuegoColaborativo extends Application {
 
         this.getCurrentActivity().stopService(new Intent(new Intent(getCurrentActivity(), PoolServiceEstados.class)));
 
-        this.jugarSiEsPrimerSubgrupo(this.getSubgrupo().getId());
+        this.getCurrentActivity().startService(new Intent(getCurrentActivity(), PoolServicePosta.class));
     }
 
     /*
@@ -178,9 +181,8 @@ public class JuegoColaborativo extends Application {
             //ahora dependendiendo del estado esperado, es el metodo que debo llamar despues de ejecutar la tarea
             if (getSubgrupo().getEstado() == getSubgrupo().ESTADO_INICIAL){
                 this.enviarJugando();
-            }/*else if (getSubgrupo().getEstado() == getSubgrupo().ESTADO_JUGANDO){
-            }*/
-            else {
+            }
+            else if (getSubgrupo().getEstado() == getSubgrupo().ESTADO_FINAL){
                 this.finJuego();
             }
         }
@@ -192,9 +194,9 @@ public class JuegoColaborativo extends Application {
 
     public void comienzoJuego() {
         try{
-            this.getCurrentActivity().showDialogError("Llegaron todos! Comienza el juego!", "JuegoColaborativo");
+            this.getCurrentActivity().showDialogError("Es tu turno! Comienza el juego!", "JuegoColaborativo");
 
-            //traigo todos los pois con sus piezas
+            //traigo el poi con sus piezas
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
 
@@ -268,10 +270,6 @@ public class JuegoColaborativo extends Application {
         setJugandoTask.executeTask("completeEnviarFinJuego", "errorEnviarFinJuego");
     }
 
-    public void errorEnviarFinJuego(String failedMethod){
-        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
-    }
-
     public void completeEnviarFinJuego(SoapObject result) {
         try{
             //llamo al pool service para esperar a que todos terminen de jugar
@@ -279,22 +277,27 @@ public class JuegoColaborativo extends Application {
 
             //Activo al Subgrupo siguiente
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            int idSubgrupoSiguiente = this.getSubgrupo().getPosta().getSiguientePosta().getSubgrupo().getId();
-            nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(idSubgrupoSiguiente)));
-            getSubgrupo().setEstado(getSubgrupo().ESTADO_JUGANDO);
-            nameValuePairs.add(new BasicNameValuePair("idEstado", Integer.toString(getSubgrupo().getEstado())));
+            nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
 
             WSTask setJugandoTask = new WSTask();
             setJugandoTask.setReferer(this);
-            setJugandoTask.setMethodName(SoapManager.METHOD_CAMBIAR_ESTADO_SUBGRUPO);
+            setJugandoTask.setMethodName(SoapManager.METHOD_SET_POSTA_ACTUAL);
             setJugandoTask.setParameters(nameValuePairs);
-            setJugandoTask.executeTask("completeCambiarEstadoSubgrupoSiguiente", "errorCambiarEstadoSubgrupoSiguiente");
+            setJugandoTask.executeTask("completeSetPostaActual", "errorSetPostaActual");
         }catch (Exception e){
             Log.e("ERROR", e.getMessage());
         }
     }
 
-    public void errorCambiarEstadoSubgrupoSiguiente(String failedMethod){
+    public void errorEnviarFinJuego(String failedMethod){
+        this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
+    }
+
+    public void completeSetPostaActual(SoapObject result){
+        //NO HACE NADA. EL CICLO SE CIERRA EN esperarEstadoSubgrupos() MEDIANTE PoolServiceEstados.
+    }
+
+    public void errorSetPostaActual(String failedMethod){
         this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
     }
 
@@ -313,19 +316,19 @@ public class JuegoColaborativo extends Application {
         esperarEstadoTask.executeTask("completeGetResultados", "errorGetResultados");
     }
 
-/*
-Método que es llamado por el PoolServiceEstados para chequear si hay preguntas por responder
-*/
-public void esperarPreguntasSubgrupos(){
-    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-    nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
+    /*
+    Método que es llamado por el PoolServiceEstados para chequear si hay preguntas por responder
+    */
+    public void esperarPreguntasSubgrupos(){
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
 
-    WSTask esperarEstadoTask = new WSTask();
-    esperarEstadoTask.setReferer(this);
-    esperarEstadoTask.setMethodName(SoapManager.METHOD_EXISTE_PREGUNTA_SIN_RESPONDER);
-    esperarEstadoTask.setParameters(nameValuePairs);
-    esperarEstadoTask.executeTask("completeEsperarPreguntasSubgrupos", "errorEsperarPreguntasSubgrupos");
-}
+        WSTask esperarEstadoTask = new WSTask();
+        esperarEstadoTask.setReferer(this);
+        esperarEstadoTask.setMethodName(SoapManager.METHOD_EXISTE_PREGUNTA_SIN_RESPONDER);
+        esperarEstadoTask.setParameters(nameValuePairs);
+        esperarEstadoTask.executeTask("completeEsperarPreguntasSubgrupos", "errorEsperarPreguntasSubgrupos");
+    }
 
     public void errorEsperarPreguntasSubgrupos(String failedMethod){
         this.getCurrentActivity().showDialogError("Error en la tarea:" + failedMethod, "Error");
@@ -412,21 +415,22 @@ public void esperarPreguntasSubgrupos(){
     public void completeGetResultados(SoapObject result) {
         // Inicializo el arreglo de resultados
         this.setResultadoFinal(new TreeSet<ResultadoFinal>());
-        this.getSubgrupo().setResultados(new ArrayList<Resultado>());
         HashMap<String, Integer> resultadosParciales = new HashMap<String, Integer>();
         try{
             for (int i = 0; i < result.getPropertyCount(); i++) {
                 String nombreGrupo = ((SoapObject) result.getProperty(i)).getProperty("nombreGrupo").toString();
                 int idSubgrupo = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("idSubgrupo").toString());
-                int respuestaCumple = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("respuestaCumple").toString());
-                int cumple = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("cumple").toString());
+                //Respuesta del subgrupo
+                int decisionFinalCumple = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("decisionFinalCumple").toString());
+                //Si es correcta o no la decision tomada (se calcula en el servidor)
+                int decisionCorrecta = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("decisionCorrecta").toString());
 
                 if(!resultadosParciales.containsKey(nombreGrupo)){
                     // Si no existe lo inicializo
                     resultadosParciales.put(nombreGrupo, 0);
                 }
 
-                if(respuestaCumple == cumple){
+                if(decisionCorrecta == 1){
                     // Sumo 1 a las respuestas correctas
                     resultadosParciales.put(nombreGrupo, resultadosParciales.get(nombreGrupo) + 1);
                 }
@@ -434,7 +438,7 @@ public void esperarPreguntasSubgrupos(){
                 // Si son los resultados de mi subgrupo los guardo para mostrar el detalle
                 if(idSubgrupo == this.getSubgrupo().getId()){
                     String pieza = ((SoapObject) result.getProperty(i)).getProperty("pieza").toString();
-                    this.getSubgrupo().getResultados().add(new Resultado(pieza, respuestaCumple == 1, cumple == respuestaCumple));
+                    this.getSubgrupo().setResultado(new Resultado(pieza, decisionFinalCumple == 1, decisionCorrecta == 1));
                 }
             }
 

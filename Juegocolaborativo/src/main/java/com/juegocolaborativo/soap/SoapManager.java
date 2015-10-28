@@ -24,7 +24,8 @@ public class SoapManager {
     public static final String METHOD_GUARDAR_RESPUESTA = "guardarRespuesta";
     public static final String METHOD_GET_SUBGRUPOS = "getSubgrupos";
     public static final String METHOD_GET_RESULTADOS = "getResultadoFinal";
-    public static final String METHOD_ES_PRIMER_SUBGRUPO = "esPrimerSubgrupo";
+    public static final String METHOD_ES_SUBGRUPO_ACTUAL = "esSubgrupoActual";
+    public static final String METHOD_SET_POSTA_ACTUAL = "setPostaActual";
 
     public SoapManager(){
 
