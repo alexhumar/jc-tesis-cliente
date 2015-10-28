@@ -2,32 +2,32 @@
 <items version="2" >
 
     <item
-        jar="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\exploded-aar\com.google.android.gms\play-services\4.0.30\classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="cebe8e4a3a469c4623addcca1dc571407ff3a08e">
-        <dex dex="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\classes-e93d9833f1f91bd33996fff2e33713e2a684c39f.jar" />
-    </item>
-    <item
-        jar="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\libs\model.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="77f9830887f114a3778cbf105cda37fb7901fa89">
-        <dex dex="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\model-15a65cdea1277c9cf3cbba5df8ee31ad7b214688.jar" />
-    </item>
-    <item
-        jar="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\libs\ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar"
+        jar="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\libs\ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="224c93f1824fa17b96db7250c2e5e2703d45e052">
-        <dex dex="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\ksoap2-android-assembly-3.0.0-jar-with-dependencies-0dce03e4b05b0871f416fd60f6d8df1737039e63.jar" />
+        <dex dex="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\ksoap2-android-assembly-3.0.0-jar-with-dependencies-d721dbedb11d103dee06cdb881ba7d119f143090.jar" />
+    </item>
+    <item
+        jar="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\libs\model.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="77f9830887f114a3778cbf105cda37fb7901fa89">
+        <dex dex="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\model-9985cb05ce15ff61d8b8cec4d9e01bee84184ba9.jar" />
     </item>
     <item
         jar="C:\Android\sdk\extras\android\m2repository\com\android\support\support-v4\13.0.0\support-v4-13.0.0.jar"
         jumboMode="false"
         revision="22.0.1"
         sha1="3fe75433da602500cc71fcc1c46e5550291dd45d">
-        <dex dex="C:\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\support-v4-13.0.0-f266658a4b6743227578ead0c6da4bdbc4780a0f.jar" />
+        <dex dex="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\support-v4-13.0.0-f266658a4b6743227578ead0c6da4bdbc4780a0f.jar" />
+    </item>
+    <item
+        jar="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\exploded-aar\com.google.android.gms\play-services\4.0.30\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="cebe8e4a3a469c4623addcca1dc571407ff3a08e">
+        <dex dex="C:\Users\alexh\Proyectos Android\JuegocolaborativoProject\Juegocolaborativo\build\intermediates\pre-dexed\debug\classes-d38f2b7a0fa50c7c1447a49269a90466213705b5.jar" />
     </item>
 
 </items>
