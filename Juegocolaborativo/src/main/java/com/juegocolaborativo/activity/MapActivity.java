@@ -338,7 +338,7 @@ public class MapActivity extends DefaultActivity implements
         this.getActiveMarkers().get(id).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.common_signin_btn_icon_dark));
     }
 
-    public void completeFinJuegoSubgrupo(SoapObject result) {
+    /*public void completeFinJuegoSubgrupo(SoapObject result) {
         SoapPrimitive res = (SoapPrimitive) result.getProperty("valorInteger");
 
         boolean termino = Integer.parseInt(res.toString()) == 1;
@@ -354,7 +354,7 @@ public class MapActivity extends DefaultActivity implements
 
     public void errorFinJuegoSubgrupoTask(String failedMethod){
         showDialogError("Error en la tarea:" + failedMethod, "Error");
-    }
+    }*/
 
     public void removerPuntoFinal(){
         this.removeProximityAlert(PROX_ALERT_POI_SIGUIENTE);

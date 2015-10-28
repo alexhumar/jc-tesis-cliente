@@ -317,7 +317,7 @@ public class JuegoColaborativo extends Application {
     }
 
     /*
-    Método que es llamado por el PoolServiceEstados para chequear si hay preguntas por responder
+    Método que es llamado por el PoolServiceRespuestas para chequear si hay preguntas por responder
     */
     public void esperarPreguntasSubgrupos(){
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -354,6 +354,7 @@ public class JuegoColaborativo extends Application {
                     int cumple = Integer.parseInt(res4.toString());
                     SoapPrimitive res5 = (SoapPrimitive) result.getProperty("justificacion");
                     String justificacion = res5.toString();
+                    //FIXME AGREGAR EL METODO A LA CLASE SUBGRUPO
                     this.getSubgrupo().setConsultaActual(new Consulta(id,nombrePieza,descripcionPieza,cumple,justificacion));
                     // Inicio la activity para responder la consulta
                     this.getCurrentActivity().startActivity(new Intent(this, ResponderActivity.class));
@@ -386,15 +387,15 @@ public class JuegoColaborativo extends Application {
     public void completeEsperarRespuestasSubgrupos(SoapObject result) {
         try{
             if (result.getPropertyCount() > this.getSubgrupo().getCantidadRespuestas()){
-                HashMap<Integer, Respuesta> respuestas = this.getSubgrupo().getRespuestas().get(this.getPiezaActual().getId());
-                    for (int i = 0; i < result.getPropertyCount(); i++) {
-                        int idSubgrupo = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("idSubgrupo").toString());
-                        int cumple = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("cumple").toString());
+                HashMap<Integer, Respuesta> respuestas = this.getSubgrupo().getRespuestas();
+                for (int i = 0; i < result.getPropertyCount(); i++) {
+                        int idSubgrupoConsultado = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("idSubgrupoConsultado").toString());
+                        int acuerdoPropuesta = Integer.parseInt(((SoapObject) result.getProperty(i)).getProperty("acuerdoPropuesta").toString());
                         String justificacion = ((SoapObject) result.getProperty(i)).getProperty("justificacion").toString();
 
                         //busco en la lista de respuestas de la pieza actual del subgrupo y guardo la respuesta
-                        respuestas.get(idSubgrupo).setCumple(cumple);
-                        respuestas.get(idSubgrupo).setJustificacion(justificacion);
+                        respuestas.get(idSubgrupoConsultado).setCumple(acuerdoPropuesta);
+                        respuestas.get(idSubgrupoConsultado).setJustificacion(justificacion);
 
                         this.getSubgrupo().setCantidadRespuestas(this.getSubgrupo().getCantidadRespuestas() + 1);
                     }

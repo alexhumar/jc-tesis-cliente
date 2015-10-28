@@ -80,7 +80,7 @@ public class RespuestasActivity extends DefaultActivity {
             RespuestasActivity currentActivity = ((RespuestasActivity) this.getActivity());
             currentActivity.setRespuestasView((ListView) rootView.findViewById(R.id.listaRespuestas));
 
-            ArrayList<Respuesta> arrayRespuestas = new ArrayList<Respuesta>(app.getSubgrupo().getRespuestas().get(app.getPiezaActual().getId()).values());
+            ArrayList<Respuesta> arrayRespuestas = new ArrayList<Respuesta>(app.getSubgrupo().getRespuestas().values());
 
             currentActivity.setResultadosAdapter(new ResultadosAdapter(this.getActivity(), arrayRespuestas));
 

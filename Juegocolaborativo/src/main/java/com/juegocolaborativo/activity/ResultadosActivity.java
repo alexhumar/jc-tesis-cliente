@@ -69,7 +69,8 @@ public class ResultadosActivity extends DefaultActivity {
 
             JuegoColaborativo app = (JuegoColaborativo) getActivity().getApplication();
             List<ResultadoFinal> list = new ArrayList<ResultadoFinal> (app.getResultadoFinal());
-            List<Resultado> listSubgrupo = new ArrayList<Resultado> (app.getSubgrupo().getResultados());
+            List<Resultado> listSubgrupo = new ArrayList<Resultado>();
+            listSubgrupo.add(app.getSubgrupo().getResultado());
 
             ListView listaResultados = (ListView) rootView.findViewById(R.id.listView);
             listaResultados.setAdapter(new ResultadoItemAdapter((ResultadosActivity) this.getActivity(), list));
