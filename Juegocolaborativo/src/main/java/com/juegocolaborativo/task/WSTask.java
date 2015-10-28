@@ -118,7 +118,7 @@ public class WSTask extends AsyncTask<Void, Void, SoapObject> {
 
     protected void onPostExecute(SoapObject result) {
         try {
-            // Aca debería chequear si todo llegó bien
+            // Aca debería chequear si llegó bien
             if (result != null){
                 (this.getMethod()).invoke(this.getReferer(), result);
             } else if (this.getErrorCallback() != null){

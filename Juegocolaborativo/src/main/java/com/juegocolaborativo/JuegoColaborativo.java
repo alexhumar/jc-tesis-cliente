@@ -354,7 +354,7 @@ public class JuegoColaborativo extends Application {
                     int cumple = Integer.parseInt(res4.toString());
                     SoapPrimitive res5 = (SoapPrimitive) result.getProperty("justificacion");
                     String justificacion = res5.toString();
-                    //FIXME AGREGAR EL METODO A LA CLASE SUBGRUPO
+
                     this.getSubgrupo().setConsultaActual(new Consulta(id,nombrePieza,descripcionPieza,cumple,justificacion));
                     // Inicio la activity para responder la consulta
                     this.getCurrentActivity().startActivity(new Intent(this, ResponderActivity.class));

@@ -88,7 +88,6 @@ public class DefaultActivity extends Activity {
 
     public void enviarMsjConsultaRespondida(){
         //si vuelvo de responder una consulta, mostrar mensaje
-        //FIXME volver a meter la consulta actual en el Subgrupo. (model.jar)
         if ((((JuegoColaborativo) getApplication()).getSubgrupo().getConsultaActual() != null) && (((JuegoColaborativo) getApplication()).getSubgrupo().getConsultaActual().getRespondida() == 1)){
             //borro la consulta actual porque ya fue respondida
             ((JuegoColaborativo) getApplication()).getSubgrupo().setConsultaActual(null);
