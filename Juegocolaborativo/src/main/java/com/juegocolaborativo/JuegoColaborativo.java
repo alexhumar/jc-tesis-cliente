@@ -78,6 +78,7 @@ public class JuegoColaborativo extends Application {
         this.subgrupo = subgrupo;
     }
 
+    //TODO Revisar los nombre de las properties de las llamadas a web services
     public void esperarTurnoJuego() {
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
         nameValuePairs.add(new BasicNameValuePair("idSubgrupo", Integer.toString(getSubgrupo().getId())));
@@ -438,8 +439,8 @@ public class JuegoColaborativo extends Application {
 
                 // Si son los resultados de mi subgrupo los guardo para mostrar el detalle
                 if(idSubgrupo == this.getSubgrupo().getId()){
-                    String pieza = ((SoapObject) result.getProperty(i)).getProperty("pieza").toString();
-                    this.getSubgrupo().setResultado(new Resultado(pieza, decisionFinalCumple == 1, decisionCorrecta == 1));
+                    String nombrePieza = ((SoapObject) result.getProperty(i)).getProperty("nombrePieza").toString();
+                    this.getSubgrupo().setResultado(new Resultado(nombrePieza, decisionFinalCumple == 1, decisionCorrecta == 1));
                 }
             }
 
